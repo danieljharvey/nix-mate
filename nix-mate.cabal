@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 181e8d38552c4907b2f7f21c091d8920d5f0419aff4e1a3b8f730eeb5f9662cf
+-- hash: f06ef0a796cc9ba9af3c6b941a2818b8b54e66a2670dcbbe3fa0272bc1183db8
 
 name:           nix-mate
 version:        0.1.0.0
@@ -30,10 +30,13 @@ library
       Actions.Add
       Actions.Config
       Actions.CreateNixFile
+      Actions.Direnv
       Actions.Search
+      Actions.Shell
       Lib
       Types.Config
       Types.Search
+      Types.Shell
   other-modules:
       Paths_nix_mate
   hs-source-dirs:

@@ -1,4 +1,4 @@
-module Actions.CreateNixFile (createNixFile) where
+module Actions.CreateNixFile (createNixFile, createDerivation) where
 
 import qualified Data.List as L
 import Types.Config
@@ -8,10 +8,10 @@ type Path = String
 -- create shell.nix file from our config
 createNixFile :: Path -> Config -> IO ()
 createNixFile path cfg =
-  writeFile path (nixShell cfg)
+  writeFile path (createDerivation cfg)
 
-nixShell :: Config -> String
-nixShell config =
+createDerivation :: Config -> String
+createDerivation config =
   start
     <> importPkgs (rev config) (sha256 config)
     <> packages (name config) (inputs config)

@@ -8,6 +8,8 @@ data Command
   | Add Dependency
   | Output
   | Init
+  | Paths
+  | Derivation
   deriving (Eq, Ord, Show)
 
 getCmd :: IO Command
@@ -34,10 +36,22 @@ opts =
               (progDesc "Output a shell.nix file")
           )
         <> command
+          "derivation"
+          ( info
+              (pure Derivation)
+              (progDesc "Print nix derivation to stdout")
+          )
+        <> command
           "init"
           ( info
               (pure Init)
               (progDesc "Initialise a new project in the current folder")
+          )
+        <> command
+          "paths"
+          ( info
+              (pure Paths)
+              (progDesc "Install packages and return the new paths")
           )
         <> command
           "add"
