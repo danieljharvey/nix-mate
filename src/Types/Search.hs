@@ -12,9 +12,9 @@ data Search
   | Similar [SearchPackage]
   deriving (Eq, Ord, Show)
 
+-- response from nix search
 type SearchResponse = M.Map String SearchPackage
 
--- response from nix search
 data SearchPackage
   = SearchPackage
       { pkgName :: String,
@@ -22,3 +22,4 @@ data SearchPackage
         description :: String
       }
   deriving (Eq, Ord, Show, Generic, JSON.FromJSON)
+-- response from nix-env -qaP --json

@@ -2,6 +2,7 @@ module Actions.Config where
 
 import qualified Data.Aeson as JSON
 import qualified Data.ByteString.Lazy as LBS
+import qualified Data.Set as S
 import Types.Config
 
 type Path = String
@@ -22,7 +23,8 @@ defaultConfig =
     (Rev "5272327b81ed355bbed5659b8d303cf2979b6953")
     (Sha256 "0182ys095dfx02vl2a20j1hz92dx3mfgz2a6fhn31bqlp1wa8hlq")
     (ProjectName "nix-mate")
-    [Dependency "hello"]
+    (S.fromList [Dependency "hello"])
+    (ShellPath "./shell.nix")
 
 init :: IO Config
 init = do

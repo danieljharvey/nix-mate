@@ -30,7 +30,7 @@ library:
   source-dirs: src
 
 executables:
-  nix-mate-exe:
+  nix-mate:
     main:                Main.hs
     source-dirs:         app
     ghc-options:

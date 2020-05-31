@@ -1,9 +1,9 @@
 module Actions.Add where
 
 import qualified Actions.Config as Actions
-import qualified Actions.CreateNixFile as Actions
-import qualified Actions.Search as Actions
+import qualified Actions.Test as Actions
 import Data.Coerce
+import qualified Data.Set as S
 import Types.Config
 import Types.Search
 
@@ -14,25 +14,17 @@ addToConfig depName cfg =
   cfg {inputs = newPackages}
   where
     newPackages =
-      inputs cfg <> [depName]
+      S.insert depName (inputs cfg)
 
-findPackage :: Dependency -> IO (Maybe SearchPackage)
-findPackage depName = do
-  found <- Actions.search depName
-  case found of
-    Found a -> pure (Just a)
-    _ -> pure Nothing
-
-addPackage :: Path -> Dependency -> IO ()
-addPackage path depName = do
-  found <- findPackage depName
-  cfg <- Actions.loadConfig path
-  case (,) <$> found <*> cfg of
-    Just (_, cfg') -> do
-      let newCfg = addToConfig depName cfg'
-      Actions.saveConfig path newCfg
+addPackage :: Config -> Path -> Dependency -> IO ()
+addPackage cfg path depName = do
+  let newConfig = addToConfig depName cfg
+  test <- Actions.testDerivation newConfig
+  case test of
+    Right _ -> do
+      Actions.saveConfig path newConfig
       print $ "Added " <> coerce depName <> " to config"
-      Actions.createNixFile "./shell.nix" newCfg
-    _ -> do
-      print "Could not find package"
+    Left e -> do
+      print e
+      print $ "Could not find package '" <> coerce depName <> "'"
       pure ()

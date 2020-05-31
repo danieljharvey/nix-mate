@@ -6,6 +6,7 @@ import Types.Config
 data Command
   = Search Dependency
   | Add Dependency
+  | Remove Dependency
   | Output
   | Init
   | Paths
@@ -58,5 +59,11 @@ opts =
           ( info
               (Add <$> searchDep)
               (progDesc "Add a package")
+          )
+        <> command
+          "remove"
+          ( info
+              (Remove <$> searchDep)
+              (progDesc "Remove a package")
           )
     )

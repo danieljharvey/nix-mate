@@ -3,8 +3,11 @@ module Actions.Shell (getNixPaths, runShell) where
 -- this is where we run a nix-shell
 import qualified Actions.CreateNixFile as Actions
 import Control.Exception (try)
+import Data.Coerce
+import Data.List (intercalate)
 import System.Process
 import Types.Config
+import Types.CreateNixFile
 import Types.Shell
 
 -- run a shell action that throws
@@ -31,7 +34,16 @@ getNixPaths cfg =
     <$> firstLine
     <$> safeShell command ""
   where
-    command = "nix-shell --expr '" <> derivation <> "' --pure --command 'echo $PATH'"
+    command =
+      intercalate
+        " "
+        [ "nix-shell",
+          "--expr",
+          "'" <> coerce derivation <> "'",
+          "--pure",
+          "--command",
+          "'echo $PATH'"
+        ]
     derivation = Actions.createDerivation cfg
     firstLine str = case lines str of
       (a : _) -> a

@@ -4,6 +4,7 @@ import qualified Actions.Add as Actions
 import qualified Actions.Config as Actions
 import qualified Actions.CreateNixFile as Actions
 import qualified Actions.Direnv as Actions
+import qualified Actions.Remove as Actions
 import qualified Actions.Search as Actions
 import qualified Actions.Shell as Actions
 import Data.Coerce
@@ -13,37 +14,53 @@ import Options.Applicative
 import Types.Config
 import Types.Shell
 
+nixMateConfig :: String
+nixMateConfig = "./nix-mate.json"
+
+direnvConfig :: String
+direnvConfig = "./envrc"
+
 main :: IO ()
 main = do
   cmd <- getCmd
   case cmd of
     Search s -> do
-      found <- Actions.search s
-      print found
-    Output -> do
-      cfg <- Actions.loadConfig "./nix-mate.json"
+      cfg <- Actions.loadConfig nixMateConfig
       case cfg of
         Just cfg' -> do
-          Actions.createNixFile "./shell.nix" cfg'
+          found <- Actions.search cfg' s
+          print found
+        Nothing -> print "Could not find nix-mate.json"
+    Output -> do
+      cfg <- Actions.loadConfig nixMateConfig
+      case cfg of
+        Just cfg' -> do
+          Actions.createNixFile cfg'
           print "shell.nix created"
         Nothing -> print "Could not find nix-mate.json"
     Derivation -> do
-      cfg <- Actions.loadConfig "./nix-mate.json"
+      cfg <- Actions.loadConfig nixMateConfig
       case cfg of
         Just cfg' -> do
-          putStr (Actions.createDerivation cfg')
+          print (Actions.createDerivation cfg')
         _ -> print "No nix-mate.json found in this folder"
     Init -> do
       Actions.init
-      Actions.createDirenvRc "./.envrc"
+      Actions.createDirenvRc direnvConfig
       putStrLn "Template project created!"
     Paths -> do
-      cfg <- Actions.loadConfig "./nix-mate.json"
+      cfg <- Actions.loadConfig nixMateConfig
       case cfg of
         Just cfg' ->
           Actions.getNixPaths cfg'
             >>= (putStr . coerce)
         Nothing -> print "No nix-mate.json found in this folder"
     Add dep -> do
-      Actions.addPackage "./nix-mate.json" dep
+      cfg <- Actions.loadConfig nixMateConfig
+      case cfg of
+        Just cfg' -> do
+          Actions.addPackage cfg' nixMateConfig dep
+        Nothing -> print "No nix-mate.json found in this folder"
+    Remove dep -> do
+      Actions.removePackage nixMateConfig dep
   pure ()

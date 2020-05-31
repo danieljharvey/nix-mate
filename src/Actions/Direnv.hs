@@ -8,5 +8,5 @@ type Path = String
 
 createDirenvRc :: Path -> IO ()
 createDirenvRc path = do
-  writeFile path "PATH_add $(nix-mate-exe paths)"
+  writeFile path "PATH_add $(nix-mate paths)"
   pure ()
