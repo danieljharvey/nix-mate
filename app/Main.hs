@@ -17,7 +17,7 @@ nixMateConfig :: String
 nixMateConfig = "./nix-mate.json"
 
 direnvConfig :: String
-direnvConfig = "./envrc"
+direnvConfig = "./.envrc"
 
 main :: IO ()
 main = do

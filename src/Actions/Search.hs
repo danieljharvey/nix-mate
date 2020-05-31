@@ -36,7 +36,7 @@ searchDescription depName =
     [ "nix-env",
       "-qaP",
       "--file",
-      "packages.nix",
+      "package.nix",
       "--available",
       "--json",
       "'.*" <> coerce depName <> ".*'",
@@ -63,7 +63,7 @@ findMatch resp =
 -- do nix search <package> --json
 search :: Config -> Dependency -> IO (Either SearchError [SearchPackage])
 search cfg depName = do
-  Actions.createNixFile cfg
+  Actions.savePackageNix cfg
   str <- safeShell (searchDescription depName) ""
   case decodeFromString str of
     Just items -> pure (findMatch items)

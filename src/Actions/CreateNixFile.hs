@@ -1,4 +1,4 @@
-module Actions.CreateNixFile (createNixFile, createDerivation) where
+module Actions.CreateNixFile (createNixFile, createDerivation, savePackageNix) where
 
 import Data.Coerce
 import qualified Data.List as L
@@ -18,6 +18,14 @@ createNixFile :: Config -> IO ()
 createNixFile cfg = do
   writeFile (coerce nixShellPath cfg) (coerce $ createDerivation cfg)
 
+savePackageNix :: Config -> IO ()
+savePackageNix cfg = do
+  writeFile ("./package.nix") (coerce createPackageNix cfg)
+
+createPackageNix :: Config -> Derivation
+createPackageNix config =
+  start <> importPkgs (rev config) (sha256 config) <> Derivation " in packages"
+
 createDerivation :: Config -> Derivation
 createDerivation config =
   start
@@ -35,8 +43,8 @@ importPkgs rev' sha256' =
       [ "packages = import (pkgs.fetchFromGitHub {",
         "owner = \"nixos\";",
         "repo = \"nixpkgs\";",
-        "rev = " <> coerce rev' <> ";",
-        "sha256 = " <> coerce sha256' <> ";",
+        "rev = \"" <> coerce rev' <> "\";",
+        "sha256 = \"" <> coerce sha256' <> "\";",
         "}) {};"
       ]
 
@@ -45,7 +53,7 @@ packages name' deps =
   Derivation $
     concat
       [ " in packages.stdenv.mkDerivation {",
-        "name = " <> coerce name' <> ";",
+        "name = \"" <> coerce name' <> "\";",
         "buildInputs = with packages; [",
         depNames,
         "]; }"
