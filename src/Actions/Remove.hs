@@ -18,10 +18,14 @@ findInConfig :: Dependency -> Config -> Maybe Config
 findInConfig depName cfg =
   if S.member depName (inputs cfg) then pure cfg else Nothing
 
+hush :: Either e a -> Maybe a
+hush (Right a) = Just a
+hush _ = Nothing
+
 removePackage :: Path -> Dependency -> IO ()
 removePackage path depName = do
   cfg <- Actions.loadConfig path
-  case cfg >>= findInConfig depName of
+  case (hush cfg) >>= findInConfig depName of
     Just cfg' -> do
       let newCfg = removeFromConfig depName cfg'
       Actions.saveConfig path newCfg

@@ -26,23 +26,26 @@ main = do
     Search s -> do
       cfg <- Actions.loadConfig nixMateConfig
       case cfg of
-        Just cfg' -> do
+        Right cfg' -> do
           found <- Actions.search cfg' s
           print found
-        Nothing -> print "Could not find nix-mate.json"
+        Left CouldNotLoadConfig ->
+          print "Could not find nix-mate.json"
     Output -> do
       cfg <- Actions.loadConfig nixMateConfig
       case cfg of
-        Just cfg' -> do
+        Right cfg' -> do
           Actions.createNixFile cfg'
           print "shell.nix created"
-        Nothing -> print "Could not find nix-mate.json"
+        Left CouldNotLoadConfig ->
+          print "Could not find nix-mate.json"
     Derivation -> do
       cfg <- Actions.loadConfig nixMateConfig
       case cfg of
-        Just cfg' -> do
+        Right cfg' -> do
           print (Actions.createDerivation cfg')
-        _ -> print "No nix-mate.json found in this folder"
+        Left CouldNotLoadConfig ->
+          print "No nix-mate.json found in this folder"
     Init -> do
       _ <- Actions.init
       Actions.createDirenvRc direnvConfig
@@ -50,14 +53,15 @@ main = do
     Paths -> do
       cfg <- Actions.loadConfig nixMateConfig
       case cfg of
-        Just cfg' ->
+        Right cfg' ->
           Actions.getNixPaths cfg'
             >>= (putStr . coerce)
-        Nothing -> print "No nix-mate.json found in this folder"
+        Left CouldNotLoadConfig ->
+          print "No nix-mate.json found in this folder"
     Add dep -> do
       cfg <- Actions.loadConfig nixMateConfig
       case cfg of
-        Just cfg' -> do
+        Right cfg' -> do
           resp <- Actions.addPackage cfg' nixMateConfig dep
           case resp of
             Right a -> print a
@@ -65,7 +69,8 @@ main = do
               print $ "Could not find package " <> coerce depName
             Left (AlreadyExistsInPackageSet depName) ->
               print $ "Package " <> coerce depName <> " already in set"
-        Nothing -> print "No nix-mate.json found in this folder"
+        Left CouldNotLoadConfig ->
+          print "No nix-mate.json found in this folder"
     Remove dep -> do
       Actions.removePackage nixMateConfig dep
   pure ()

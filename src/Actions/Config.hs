@@ -7,10 +7,12 @@ import Types.Config
 
 type Path = String
 
-loadConfig :: Path -> IO (Maybe Config)
+loadConfig :: Path -> IO (Either ConfigError Config)
 loadConfig path = do
   lbs <- LBS.readFile path
-  pure (JSON.decode lbs)
+  case (JSON.decode lbs) of
+    Just a -> pure (Right a)
+    _ -> pure (Left CouldNotLoadConfig)
 
 saveConfig :: Path -> Config -> IO ()
 saveConfig path cfg = do

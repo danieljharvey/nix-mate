@@ -39,3 +39,6 @@ data Config
         nixShellPath :: ShellPath
       }
   deriving (Eq, Ord, Show, Generic, JSON.FromJSON, JSON.ToJSON)
+
+data ConfigError
+  = CouldNotLoadConfig
