@@ -17,8 +17,8 @@ import Types.CreateNixFile
 safeShell :: String -> IO (Either String String)
 safeShell command = do
   let myShell = (shell command) {cwd = (Just ".")}
-  either <- try (readCreateProcess (myShell) "")
-  case (either :: Either IOError String) of
+  either' <- try (readCreateProcess (myShell) "")
+  case (either' :: Either IOError String) of
     Right a -> pure (Right a)
     Left e -> pure (Left (show e))
 

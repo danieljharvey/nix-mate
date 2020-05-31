@@ -7,9 +7,9 @@ import qualified Data.Aeson as JSON
 import qualified Data.Map as M
 import GHC.Generics
 
-data Search
-  = Found SearchPackage
-  | Similar [SearchPackage]
+data SearchError
+  = CouldNotReadJson
+  | NothingFound
   deriving (Eq, Ord, Show)
 
 -- response from nix search
@@ -17,9 +17,9 @@ type SearchResponse = M.Map String SearchPackage
 
 data SearchPackage
   = SearchPackage
-      { pkgName :: String,
+      { name :: String,
+        pname :: String,
         version :: String,
-        description :: String
+        system :: String
       }
   deriving (Eq, Ord, Show, Generic, JSON.FromJSON)
--- response from nix-env -qaP --json

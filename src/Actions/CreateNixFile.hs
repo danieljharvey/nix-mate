@@ -4,9 +4,14 @@ import Data.Coerce
 import qualified Data.List as L
 import Data.Set as S
 import Types.Config
+  ( Config (..),
+    Dependency (..),
+    ProjectName (..),
+    Rev (..),
+    Sha256 (..),
+    ShellPath (..),
+  )
 import Types.CreateNixFile
-
-type Path = String
 
 -- create shell.nix file from our config
 createNixFile :: Config -> IO ()
@@ -23,24 +28,24 @@ start :: Derivation
 start = Derivation "let pkgs = import <nixpkgs> {}; "
 
 importPkgs :: Rev -> Sha256 -> Derivation
-importPkgs rev sha256 =
+importPkgs rev' sha256' =
   Derivation $
     L.intercalate
       " "
       [ "packages = import (pkgs.fetchFromGitHub {",
         "owner = \"nixos\";",
         "repo = \"nixpkgs\";",
-        "rev = " <> show rev <> ";",
-        "sha256 = " <> show sha256 <> ";",
+        "rev = " <> coerce rev' <> ";",
+        "sha256 = " <> coerce sha256' <> ";",
         "}) {};"
       ]
 
 packages :: ProjectName -> S.Set Dependency -> Derivation
-packages name deps =
+packages name' deps =
   Derivation $
     concat
       [ " in packages.stdenv.mkDerivation {",
-        "name = " <> show name <> ";",
+        "name = " <> coerce name' <> ";",
         "buildInputs = with packages; [",
         depNames,
         "]; }"

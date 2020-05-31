@@ -2,10 +2,9 @@ module Actions.Add where
 
 import qualified Actions.Config as Actions
 import qualified Actions.Test as Actions
-import Data.Coerce
 import qualified Data.Set as S
+import Types.Add
 import Types.Config
-import Types.Search
 
 type Path = String
 
@@ -16,15 +15,17 @@ addToConfig depName cfg =
     newPackages =
       S.insert depName (inputs cfg)
 
-addPackage :: Config -> Path -> Dependency -> IO ()
+addPackage ::
+  Config ->
+  Path ->
+  Dependency ->
+  IO (Either AddError Dependency)
 addPackage cfg path depName = do
   let newConfig = addToConfig depName cfg
   test <- Actions.testDerivation newConfig
   case test of
     Right _ -> do
       Actions.saveConfig path newConfig
-      print $ "Added " <> coerce depName <> " to config"
-    Left e -> do
-      print e
-      print $ "Could not find package '" <> coerce depName <> "'"
-      pure ()
+      pure (Right depName)
+    Left _ ->
+      pure (Left (CouldNotFindPackage depName))

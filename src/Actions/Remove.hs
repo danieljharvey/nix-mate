@@ -1,12 +1,9 @@
 module Actions.Remove (removePackage) where
 
 import qualified Actions.Config as Actions
-import qualified Actions.CreateNixFile as Actions
-import qualified Actions.Search as Actions
 import Data.Coerce
 import qualified Data.Set as S
 import Types.Config
-import Types.Search
 
 type Path = String
 

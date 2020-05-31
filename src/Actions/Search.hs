@@ -1,64 +1,70 @@
-module Actions.Search where
+module Actions.Search (search) where
 
 import qualified Actions.CreateNixFile as Actions
 import Control.Exception (try)
 import qualified Data.Aeson as JSON
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as LBS
 import Data.ByteString.Lazy.Char8 as Char8
+import qualified Data.Char as Ch
+import Data.Coerce
 import qualified Data.List as L
 import qualified Data.Map as M
-import Data.Maybe (catMaybes, fromMaybe)
 import System.Process
-import Types.Config (Dependency (..))
 import Types.Config
 import Types.Search
 
-type Path = String
+-- we have two methods of searching
+-- nix search <package> - which is cached nicely but does not look deep into
+-- stuff like haskellPackages
+-- it would not find Agda, for instance, which is haskellPackages.Agda
 
 -- run a shell action that throws
 safeShell :: String -> String -> IO String
 safeShell command def = do
   let myShell = (shell command) {cwd = (Just ".")}
-  either <- try (readCreateProcess (myShell) "")
-  print either
-  case (either :: Either IOError String) of
-    Right a -> pure a
-    _ -> pure def
+  either' <- try (readCreateProcess (myShell) "")
+  case (either' :: Either IOError String) of
+    Right a ->
+      pure a
+    _ ->
+      pure def
 
--- we have to pipe into cat to get it to finish ..?
-searchPath :: ShellPath -> Dependency -> String
-searchPath (ShellPath path) (Dependency name) =
+-- -qa --description
+searchDescription :: Dependency -> String
+searchDescription depName =
   L.intercalate
     " "
-    [ "nix search",
-      name,
-      "--json",
+    [ "nix-env",
+      "-qaP",
       "--file",
-      path,
+      "packages.nix",
+      "--available",
+      "--json",
+      "'.*" <> coerce depName <> ".*'",
       "|",
       "cat"
     ]
 
-decodeFromString :: String -> SearchResponse
+decodeFromString :: String -> Maybe SearchResponse
 decodeFromString =
-  (fromMaybe mempty)
-    . JSON.decode
+  JSON.decode
     . Char8.pack
+    . L.filter Ch.isAscii
 
-findMatch :: Dependency -> SearchResponse -> Search
-findMatch (Dependency depName) resp =
-  case match of
-    Just dep -> Found dep
-    _ -> Similar items
+findMatch ::
+  SearchResponse ->
+  Either SearchError [SearchPackage]
+findMatch resp =
+  case items of
+    (_ : _) -> Right items
+    _ -> Left NothingFound
   where
-    match = M.lookup ("nixpkgs." <> depName) resp
     items = snd <$> M.toList resp
 
 -- do nix search <package> --json
-search :: Config -> Dependency -> IO Search
+search :: Config -> Dependency -> IO (Either SearchError [SearchPackage])
 search cfg depName = do
   Actions.createNixFile cfg
-  (findMatch depName)
-    <$> decodeFromString
-    <$> safeShell (searchPath (nixShellPath cfg) depName) ""
+  str <- safeShell (searchDescription depName) ""
+  case decodeFromString str of
+    Just items -> pure (findMatch items)
+    _ -> pure (Left CouldNotReadJson)

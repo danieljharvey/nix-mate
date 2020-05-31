@@ -8,9 +8,8 @@ import qualified Actions.Remove as Actions
 import qualified Actions.Search as Actions
 import qualified Actions.Shell as Actions
 import Data.Coerce
-import Lib
 import Options
-import Options.Applicative
+import Types.Add
 import Types.Config
 import Types.Shell
 
@@ -45,7 +44,7 @@ main = do
           print (Actions.createDerivation cfg')
         _ -> print "No nix-mate.json found in this folder"
     Init -> do
-      Actions.init
+      _ <- Actions.init
       Actions.createDirenvRc direnvConfig
       putStrLn "Template project created!"
     Paths -> do
@@ -59,7 +58,13 @@ main = do
       cfg <- Actions.loadConfig nixMateConfig
       case cfg of
         Just cfg' -> do
-          Actions.addPackage cfg' nixMateConfig dep
+          resp <- Actions.addPackage cfg' nixMateConfig dep
+          case resp of
+            Right a -> print a
+            Left (CouldNotFindPackage depName) ->
+              print $ "Could not find package " <> coerce depName
+            Left (AlreadyExistsInPackageSet depName) ->
+              print $ "Package " <> coerce depName <> " already in set"
         Nothing -> print "No nix-mate.json found in this folder"
     Remove dep -> do
       Actions.removePackage nixMateConfig dep
