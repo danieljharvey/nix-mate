@@ -19,13 +19,13 @@ addPackage ::
   Config ->
   Path ->
   Dependency ->
-  IO (Either AddError Dependency)
+  IO (Either AddError Config)
 addPackage cfg path depName = do
   let newConfig = addToConfig depName cfg
   test <- Actions.testDerivation newConfig
   case test of
     Right _ -> do
       Actions.saveConfig path newConfig
-      pure (Right depName)
+      pure (Right newConfig)
     Left _ ->
       pure (Left (CouldNotFindPackage depName))

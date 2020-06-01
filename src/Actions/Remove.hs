@@ -22,7 +22,7 @@ hush :: Either e a -> Maybe a
 hush (Right a) = Just a
 hush _ = Nothing
 
-removePackage :: Path -> Dependency -> IO ()
+removePackage :: Path -> Dependency -> IO Config
 removePackage path depName = do
   cfg <- Actions.loadConfig path
   case (hush cfg) >>= findInConfig depName of
@@ -30,6 +30,6 @@ removePackage path depName = do
       let newCfg = removeFromConfig depName cfg'
       Actions.saveConfig path newCfg
       print $ "Removed " <> coerce depName <> " from config"
+      pure newCfg
     _ -> do
-      print "Could not find package in config"
-      pure ()
+      error "Could not find package in config"

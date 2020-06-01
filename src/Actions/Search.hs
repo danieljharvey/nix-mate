@@ -3,6 +3,7 @@ module Actions.Search (search) where
 import qualified Actions.CreateNixFile as Actions
 import Control.Exception (try)
 import qualified Data.Aeson as JSON
+import Data.Bifunctor (first)
 import Data.ByteString.Lazy.Char8 as Char8
 import qualified Data.Char as Ch
 import Data.Coerce
@@ -52,16 +53,19 @@ decodeFromString =
 
 findMatch ::
   SearchResponse ->
-  Either SearchError [SearchPackage]
+  Either SearchError [(Dependency, SearchPackage)]
 findMatch resp =
   case items of
     (_ : _) -> Right items
     _ -> Left NothingFound
   where
-    items = snd <$> M.toList resp
+    items = (first Dependency) <$> M.toList resp
 
 -- do nix search <package> --json
-search :: Config -> Dependency -> IO (Either SearchError [SearchPackage])
+search ::
+  Config ->
+  Dependency ->
+  IO (Either SearchError [(Dependency, SearchPackage)])
 search cfg depName = do
   Actions.savePackageNix cfg
   str <- safeShell (searchDescription depName) ""

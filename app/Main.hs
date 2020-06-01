@@ -62,9 +62,11 @@ main = do
       cfg <- Actions.loadConfig nixMateConfig
       case cfg of
         Right cfg' -> do
-          resp <- Actions.addPackage cfg' nixMateConfig dep
-          case resp of
-            Right a -> print a
+          newCfg <- Actions.addPackage cfg' nixMateConfig dep
+          case newCfg of
+            Right newCfg' -> do
+              _ <- Actions.getNixPaths newCfg'
+              putStr $ "Package " <> coerce dep <> " installed!"
             Left (CouldNotFindPackage depName) ->
               print $ "Could not find package " <> coerce depName
             Left (AlreadyExistsInPackageSet depName) ->
@@ -72,5 +74,7 @@ main = do
         Left CouldNotLoadConfig ->
           print "No nix-mate.json found in this folder"
     Remove dep -> do
-      Actions.removePackage nixMateConfig dep
+      newCfg <- Actions.removePackage nixMateConfig dep
+      _ <- Actions.getNixPaths newCfg
+      putStr $ "Package " <> coerce dep <> " removed"
   pure ()
