@@ -2,7 +2,7 @@
 
 Install things! Delete them again! Install them again! Delete them again! It's up to you!
 
-Nix Mate is a (very much WIP) terminal front end to the Nix Package Manager. It allows clean installation of per-project dependencies.
+Nix Mate is a (very much WIP) terminal front end to the [Nix Package Manager](https://nixos.org/nix/). It allows clean installation of per-project dependencies.
 
 ## Installation
 
