@@ -50,7 +50,6 @@ main = do
       cfg <- Actions.init
       _ <- Actions.createDirenvRc direnvConfig
       _ <- Actions.getNixPaths cfg
-      _ <- Actions.reloadDirenv
       putStrLn "Template project created!"
     Paths -> do
       cfg <- Actions.loadConfig nixMateConfig
@@ -68,7 +67,6 @@ main = do
           case newCfg of
             Right newCfg' -> do
               _ <- Actions.getNixPaths newCfg'
-              _ <- Actions.reloadDirenv
               putStrLn $ "Package " <> coerce dep <> " installed!"
             Left (CouldNotFindPackage depName) ->
               print $ "Could not find package " <> coerce depName
@@ -79,6 +77,5 @@ main = do
     Remove dep -> do
       newCfg <- Actions.removePackage nixMateConfig dep
       _ <- Actions.getNixPaths newCfg
-      _ <- Actions.reloadDirenv
       putStr $ "Package " <> coerce dep <> " removed"
   pure ()
