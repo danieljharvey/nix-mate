@@ -7,6 +7,7 @@ import qualified Actions.Direnv as Actions
 import qualified Actions.Remove as Actions
 import qualified Actions.Search as Actions
 import qualified Actions.Shell as Actions
+import Control.Monad (void)
 import Data.Coerce
 import Options
 import Types.Add
@@ -28,7 +29,11 @@ main = do
       case cfg of
         Right cfg' -> do
           found <- Actions.search cfg' s
-          print found
+          case found of
+            Left _ -> putStrLn "No matching packages found"
+            Right packages -> do
+              putStrLn $ (show $ length packages) <> " packages found\n"
+              void $ traverse (putStrLn . Actions.displayPackage) packages
         Left CouldNotLoadConfig ->
           print "Could not find nix-mate.json"
     Output -> do
