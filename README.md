@@ -6,19 +6,26 @@ Nix Mate is a (very much WIP) terminal front end to the [Nix Package Manager](ht
 
 ## Installation
 
-This is quite manual at the moment. You will need:
+You will need the following installed:
 
 Nix - https://nixos.org/nix/
 
-Haskell Stack - https://docs.haskellstack.org/en/stable/README/
-
 Direnv - https://direnv.net/
 
-```bash
-git clone https://github.com/danieljharvey/nix-mate
+### MacOS
 
-stack install
+Easy!
+
+```bash
+brew update && brew install danieljharvey/tools/nix-mate
 ```
+
+### Ubuntu
+
+Currently no nice packaging available, but binaries can be downloaded from the
+[releases](https://github.com/danieljharvey/nix-mate/releases) page.
+
+## Getting started
 
 ### Set up a nix-mate project
 
@@ -35,8 +42,6 @@ This will setup a new project in this folder. Direnv will probably ask you to ru
 ```bash
 nix-mate add cowsay
 ```
-
-You will then need to run `direnv reload` or exit and re-enter the folder to put the new package in your path.
 
 ### Removing a package
 
