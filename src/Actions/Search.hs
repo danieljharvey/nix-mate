@@ -1,4 +1,4 @@
-module Actions.Search (search) where
+module Actions.Search (search, displayPackage) where
 
 import qualified Actions.CreateNixFile as Actions
 import Control.Exception (try)
@@ -9,6 +9,7 @@ import qualified Data.Char as Ch
 import Data.Coerce
 import qualified Data.List as L
 import qualified Data.Map as M
+import Data.Maybe (fromMaybe)
 import System.Process
 import Types.Config
 import Types.Search
@@ -72,3 +73,21 @@ search cfg depName = do
   case decodeFromString str of
     Just items -> pure (findMatch items)
     _ -> pure (Left CouldNotReadJson)
+
+displayPackage :: (Dependency, SearchPackage) -> String
+displayPackage (depName, details) =
+  ":: " <> coerce depName <> "\n"
+    <> "Package:     "
+    <> pname details
+    <> "\n"
+    <> "Version:     "
+    <> version details
+    <> "\n"
+    <> "Description: "
+    <> ( fromMaybe "n/a" $
+           (description . meta) details
+       )
+    <> "\n"
+    <> ">> nix-mate add "
+    <> coerce depName
+    <> "\n"

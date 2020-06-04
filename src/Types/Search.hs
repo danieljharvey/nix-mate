@@ -15,11 +15,18 @@ data SearchError
 -- response from nix search
 type SearchResponse = M.Map String SearchPackage
 
+data PackageMeta
+  = PackageMeta
+      { description :: Maybe String
+      }
+  deriving (Eq, Ord, Show, Generic, JSON.FromJSON)
+
 data SearchPackage
   = SearchPackage
       { name :: String,
         pname :: String,
         version :: String,
-        system :: String
+        system :: String,
+        meta :: PackageMeta
       }
   deriving (Eq, Ord, Show, Generic, JSON.FromJSON)
