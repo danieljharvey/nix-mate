@@ -8,7 +8,7 @@ type Path = String
 
 createDirenvRc :: Path -> IO (Either DirenvError ())
 createDirenvRc path = do
-  result <- try $ writeFile path "watchFile nix-mate.json/nPATH_add $(nix-mate paths)"
+  result <- try $ writeFile path "watch_file nix-mate.json; PATH_add $(nix-mate paths)"
   case (result :: Either IOError ()) of
     Right _ -> pure (Right ())
     Left _ -> pure (Left CouldNotWriteEnvrc)
