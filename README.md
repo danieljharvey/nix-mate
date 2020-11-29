@@ -59,6 +59,23 @@ nix-mate search nodejs
 
 This will show a big list of packages matching that name that you can install.
 
+### Pinning a new nixpkgs
+
+First, you will need to get the git hash for
+[nixpkgs](https://github.com/NixOS/nixpkgs/). Then run
+
+```bash
+# for example
+nix-prefetch-url --unpack https://github.com/NixOS/nix/archive/1f795f9f44607cc5bec70d1300150bfefcef2aae.tar.gz
+```
+
+This will print the SHA256 hash for that commit which you can put in your
+`nix-mate.json` file to use that version of nixpkgs.
+
+Find the commits for all the main versions of `nixpkgs` at the
+[nix infra](https://status.nixos.org/) page.
+
+
 ## Who is this for?
 
 This project is for users that would usually install project dependencies with `brew` or `apt-get` and would like a declarative way to do this per-project.

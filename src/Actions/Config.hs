@@ -22,8 +22,8 @@ saveConfig path cfg = do
 defaultConfig :: Config
 defaultConfig =
   Config
-    (Rev "5272327b81ed355bbed5659b8d303cf2979b6953")
-    (Sha256 "0182ys095dfx02vl2a20j1hz92dx3mfgz2a6fhn31bqlp1wa8hlq")
+    (Rev "2335e7354f8a9c34d4842aa107af14e268a27f07")
+    (Sha256 "1mjbv1j3w7wd2hh660scgqzmc9hscrfm96mqrpv1934iz82smkzy")
     (ProjectName "nix-mate")
     (S.fromList [Dependency "hello"])
     (ShellPath "./shell.nix")
