@@ -19,6 +19,7 @@ jobs:
 
       - name: Clone project
         uses: actions/checkout@v2
+
         # Fetch all history so git describe works
       - run: |
           git fetch --prune --unshallow
@@ -35,7 +36,7 @@ jobs:
         run: "stack build"
 
       - name: Output binary file 
-        run: "echo BINARY_PATH=$(stack path --local-install-root --system-ghc)/bin" >> $GITHUB_ENV
+        run: echo "BINARY_PATH=$(stack path --local-install-root --system-ghc)/bin" >> $GITHUB_ENV
       
       - name: Compress binary
         uses: svenstaro/upx-action@2.0.1
