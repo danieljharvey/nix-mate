@@ -14,23 +14,38 @@ jobs:
         os: [ubuntu-16.04, macos-latest]
 
     steps:
-      - name: Setup Stack
-        uses: timbod7/setup-stack@61acd0e
-
       - name: Clone project
         uses: actions/checkout@v2
+
+      - name: Cache stack global package db
+        id:   stack-global
+        uses: actions/cache@v2
+        with:
+          path: ~/.stack
+          key: ${{ runner.os }}-stack-global-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+          restore-keys: |
+               ${{ runner.os }}-stack-global-${{ matrix.plan.ghc }}
+
+      - name: Cache stack-installed programs in ~/.local/bin
+        id:   stack-programs
+        uses: actions/cache@v2
+        with:
+          path: ~/.local/bin
+          key: ${{ runner.os }}-stack-programs-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+          restore-keys: |
+               ${{ runner.os }}-stack-programs-${{ matrix.plan.ghc }}
+
+      - name: Cache .stack-work
+        uses: actions/cache@v2
+        with:
+          path: .stack-work
+          key: ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+          restore-keys: |
+               ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}
 
         # Fetch all history so git describe works
       - run: |
           git fetch --prune --unshallow
-
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.stack
-          key: ${{ runner.os }}-2-${{ hashFiles('stack.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-2
 
       - name: Build compiler and generate zip
         run: "stack build"
