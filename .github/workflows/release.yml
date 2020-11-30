@@ -39,7 +39,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        os: [ubuntu-latest, macOS-latest]
         ghc:
           - "8.8.3"
           - "8.10.1"
@@ -59,34 +59,51 @@ jobs:
           tagRegex: "v(.*)"
           tagRegexGroup: 1
 
-      - name: Setup Haskell
-        uses: actions/setup-haskell@v1.1.1
-        id: setup-haskell-cabal
+      - name: Cache stack global package db
+        id:   stack-global
+        uses: actions/cache@v2
         with:
-          ghc-version: ${{ matrix.ghc }}
-          cabal-version: ${{ matrix.cabal }}
+          path: ~/.stack
+          key: ${{ runner.os }}-stack-global-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+          restore-keys: |
+               ${{ runner.os }}-stack-global-${{ matrix.plan.ghc }}
 
-      - name: Freeze
-        run: |
-          cabal freeze
-
-      - name: Cache ~/.cabal/store
-        uses: actions/cache@v1
+      - name: Cache stack-installed programs in ~/.local/bin
+        id:   stack-programs
+        uses: actions/cache@v2
         with:
-          path: ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
-          key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+          path: ~/.local/bin
+          key: ${{ runner.os }}-stack-programs-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+          restore-keys: |
+               ${{ runner.os }}-stack-programs-${{ matrix.plan.ghc }}
 
-      - name: Build binary
-        run: |
-          mkdir dist
-          cabal install exe:stan --install-method=copy --overwrite-policy=always --installdir=dist
+      - name: Cache .stack-work
+        uses: actions/cache@v2
+        with:
+          path: .stack-work
+          key: ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+          restore-keys: |
+               ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}
 
-      - if: matrix.os == 'windows-latest'
-        name: Set extension to .exe on Windows
-        run: echo "::set-env name=EXT::.exe"
+      - name: 'Set up HLint'
+        uses: rwe/actions-hlint-setup@v1
+        with:
+          version: '3.1.6'
+
+      - name: 'Run HLint'
+        uses: rwe/actions-hlint-run@v2
+        with:
+          path: src/
+          fail-on: warning
+
+      - name: Run stack build
+        run: stack build
+
+      - name: Run stack test
+        run: stack test
 
       - name: Set binary path name
-        run: echo "::set-env name=BINARY_PATH::./dist/stan${{ env.EXT }}"
+        run: echo "BINARY_PATH=$(stack path --local-install-root --system-ghc)/bin" >> $GITHUB_ENV 
 
       - name: Compress binary
         uses: svenstaro/upx-action@2.0.1
