@@ -51,7 +51,7 @@ jobs:
         run: "stack build"
 
       - name: Output binary file 
-        run: echo "BINARY_PATH=$(stack path --local-install-root --system-ghc)/bin/mimsa" >> $GITHUB_ENV
+        run: echo "BINARY_PATH=$(stack path --local-install-root --system-ghc)/bin/nix-mate" >> $GITHUB_ENV
       
       - name: Compress binary
         uses: svenstaro/upx-action@2.0.1
