@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: dist-${{ runner.os }}
-          path: dist-${{ env.BINARY_PATH }}
+          path: ${{ env.BINARY_PATH }}
 
   release:
     name: Create Github Release
