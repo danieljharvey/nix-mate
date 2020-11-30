@@ -106,7 +106,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist-macOS/adl-bindist.zip
+        asset_path: dist-macOS.zip
         asset_name: nix-mate-${{ steps.version.outputs.version }}-osx.zip
         asset_content_type: application/zip
 
@@ -116,6 +116,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist-linux/adl-bindist.zip
+        asset_path: dist-linux.zip
         asset_name: nix-mate-${{ steps.version.outputs.version }}-linux.zip
         asset_content_type: application/zip
