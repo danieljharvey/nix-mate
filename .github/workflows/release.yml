@@ -50,8 +50,11 @@ jobs:
       - name: Build compiler and generate zip
         run: "stack build"
 
+      - name: Install binary
+        run: "stack install"
+
       - name: Output binary file 
-        run: echo "BINARY_PATH=$(stack path --local-install-root --system-ghc)/bin/nix-mate" >> $GITHUB_ENV
+        run: echo "BINARY_PATH=$(stack path --local-bin)/bin/nix-mate" >> $GITHUB_ENV
       
       - name: Compress binary
         uses: svenstaro/upx-action@2.0.1
