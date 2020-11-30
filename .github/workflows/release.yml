@@ -1,9 +1,8 @@
 name: New release
 on:
-  - push
-  #push:
-    #    tags:
-    #  - v[0-9]*
+  push:
+    tags:
+      - v[0-9]*
 
 jobs:
   build:
