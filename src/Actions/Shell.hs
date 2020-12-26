@@ -4,7 +4,6 @@ module Actions.Shell (getNixPaths) where
 import qualified Actions.CreateNixFile as Actions
 import Control.Exception (try)
 import Data.Coerce
-import Data.List (intercalate)
 import System.Process
 import Types.Config
 import Types.CreateNixFile
@@ -13,8 +12,8 @@ import Types.Shell
 -- run a shell action that throws
 safeShell :: String -> String -> IO String
 safeShell command def = do
-  let myShell = (shell command) {cwd = (Just ".")}
-  either' <- try (readCreateProcess (myShell) "")
+  let myShell = (shell command) {cwd = Just "."}
+  either' <- try (readCreateProcess myShell "")
   case (either' :: Either IOError String) of
     Right a -> pure a
     _ -> do
@@ -24,12 +23,11 @@ safeShell command def = do
 getNixPaths :: Config -> IO NixPaths
 getNixPaths cfg =
   NixPaths
-    <$> firstLine
+    . firstLine
     <$> safeShell command ""
   where
     command =
-      intercalate
-        " "
+      unwords
         [ "nix-shell",
           "--expr",
           "'" <> coerce derivation <> "'",

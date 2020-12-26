@@ -11,6 +11,7 @@ data Command
   | Init
   | Paths
   | Derivation
+  | ListTags
   deriving (Eq, Ord, Show)
 
 getCmd :: IO Command
@@ -18,7 +19,7 @@ getCmd = execParser (info opts idm)
 
 searchDep :: Parser Dependency
 searchDep =
-  (Dependency)
+  Dependency
     <$> argument str (metavar "<package>")
 
 opts :: Parser Command
@@ -65,5 +66,11 @@ opts =
           ( info
               (Remove <$> searchDep)
               (progDesc "Remove a package")
+          )
+        <> command
+          "tags"
+          ( info
+              (pure ListTags)
+              (progDesc "List available nixpkgs versions")
           )
     )

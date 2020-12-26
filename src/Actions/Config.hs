@@ -10,7 +10,7 @@ type Path = String
 loadConfig :: Path -> IO (Either ConfigError Config)
 loadConfig path = do
   lbs <- LBS.readFile path
-  case (JSON.decode lbs) of
+  case JSON.decode lbs of
     Just a -> pure (Right a)
     _ -> pure (Left CouldNotLoadConfig)
 

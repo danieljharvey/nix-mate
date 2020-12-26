@@ -15,7 +15,7 @@ data SearchError
 -- response from nix search
 type SearchResponse = M.Map String SearchPackage
 
-data PackageMeta
+newtype PackageMeta
   = PackageMeta
       { description :: Maybe String
       }

@@ -7,8 +7,9 @@ import qualified Actions.Direnv as Actions
 import qualified Actions.Remove as Actions
 import qualified Actions.Search as Actions
 import qualified Actions.Shell as Actions
-import Control.Monad (void)
+import qualified Actions.Tags as Actions
 import Data.Coerce
+import Data.Foldable (traverse_)
 import Options
 import Types.Add
 import Types.Config
@@ -32,8 +33,8 @@ main = do
           case found of
             Left _ -> putStrLn "No matching packages found"
             Right packages -> do
-              putStrLn $ (show $ length packages) <> " packages found\n"
-              void $ traverse (putStrLn . Actions.displayPackage) packages
+              putStrLn $ show (length packages) <> " packages found\n"
+              traverse_ (putStrLn . Actions.displayPackage) packages
         Left CouldNotLoadConfig ->
           print "Could not find nix-mate.json"
     Output -> do
@@ -83,4 +84,7 @@ main = do
       newCfg <- Actions.removePackage nixMateConfig dep
       _ <- Actions.getNixPaths newCfg
       putStr $ "Package " <> coerce dep <> " removed"
+    ListTags -> do
+      tags <- Actions.fetchTags
+      traverse_ (putStrLn . Actions.displayTag) tags
   pure ()

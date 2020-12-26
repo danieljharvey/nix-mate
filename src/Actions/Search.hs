@@ -1,4 +1,4 @@
-module Actions.Search (search, displayPackage) where
+module Actions.Search (search, displayPackage, safeShell) where
 
 import qualified Actions.CreateNixFile as Actions
 import Control.Exception (try)
@@ -22,8 +22,8 @@ import Types.Search
 -- run a shell action that throws
 safeShell :: String -> String -> IO String
 safeShell command def = do
-  let myShell = (shell command) {cwd = (Just ".")}
-  either' <- try (readCreateProcess (myShell) "")
+  let myShell = (shell command) {cwd = Just "."}
+  either' <- try (readCreateProcess myShell "")
   case (either' :: Either IOError String) of
     Right a ->
       pure a
@@ -33,8 +33,7 @@ safeShell command def = do
 -- -qa --description
 searchDescription :: Dependency -> String
 searchDescription depName =
-  L.intercalate
-    " "
+  L.unwords
     [ "nix-env",
       "-qaP",
       "--file",
@@ -60,7 +59,7 @@ findMatch resp =
     (_ : _) -> Right items
     _ -> Left NothingFound
   where
-    items = (first Dependency) <$> M.toList resp
+    items = first Dependency <$> M.toList resp
 
 -- do nix search <package> --json
 search ::
@@ -84,9 +83,10 @@ displayPackage (depName, details) =
     <> version details
     <> "\n"
     <> "Description: "
-    <> ( fromMaybe "n/a" $
-           (description . meta) details
-       )
+    <> fromMaybe
+      "n/a"
+      ( (description . meta) details
+      )
     <> "\n"
     <> ">> nix-mate add "
     <> coerce depName
