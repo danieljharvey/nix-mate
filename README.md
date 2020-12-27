@@ -43,15 +43,18 @@ This will setup a new project in this folder. Direnv will probably ask you to ru
 nix-mate add cowsay
 ```
 
+This will make the `cowsay` binary available whilst you are inside the project
+directory.
+
 ### Removing a package
 
 ```bash
 nix-mate remove cowsay
 ```
 
-### Searching for packages
+This will remove the `cowsay` binary from your project directory.
 
-(The output needs formatting, bare with me)
+### Searching for packages
 
 ```bash
 nix-mate search nodejs
@@ -59,22 +62,54 @@ nix-mate search nodejs
 
 This will show a big list of packages matching that name that you can install.
 
-### Pinning a new nixpkgs
+### Versions of nixpkgs
 
-First, you will need to get the git hash for
+`nix-mate` uses a pinned version of nixpkgs for installing so that we get the
+same result every time.
+
+#### View available versions
+
+To view the available versions of nixpkgs run:
+
+```bash
+nix-mate tags
+```
+
+This will display all the available versions.
+
+#### Use a specific version
+
+You can choose to use a version using:
+
+```bash
+nix-mate set-version <version-number>
+# for example
+nix-mate set-version 19.03
+```
+
+This will update your project to use this new version.
+
+#### Use most up to date version
+
+If you'd just prefer to stay up to date, use:
+
+```bash
+nix-mate update
+```
+
+This will use the newest version.
+
+#### Pinning to a custom nixpkgs commit
+
+First, you will need to get the git hash for the commit you wish to use at
 [nixpkgs](https://github.com/NixOS/nixpkgs/). Then run
 
 ```bash
+nix-mate pin <commit-hash>
+
 # for example
-nix-prefetch-url --unpack https://github.com/NixOS/nix/archive/1f795f9f44607cc5bec70d1300150bfefcef2aae.tar.gz
+nix-mate pin 1f795f9f44607cc5bec70d1300150bfefcef2aae
 ```
-
-This will print the SHA256 hash for that commit which you can put in your
-`nix-mate.json` file to use that version of nixpkgs.
-
-Find the commits for all the main versions of `nixpkgs` at the
-[nix infra](https://status.nixos.org/) page.
-
 
 ## Who is this for?
 

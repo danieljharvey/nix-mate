@@ -1,21 +1,21 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
 
-module Types.Tags (Tag (..), TagName, mkTagName, getTagName) where
+module Types.Tags (Tag (..), TagName, mkTagName, getTagName, tagsPrefix) where
 
 import qualified Data.Char as Char
 import Data.List (isInfixOf)
-import Types.Config (Rev (..))
+import Types.Config
 
 newtype TagName = TagName String
   deriving newtype (Eq, Ord, Show)
 
-dropS :: String
-dropS = "refs/tags/"
+tagsPrefix :: String
+tagsPrefix = "refs/tags/"
 
 mkTagName :: String -> Maybe TagName
 mkTagName s =
-  let clean = drop (length dropS) s
+  let clean = drop (length tagsPrefix) s
    in if not (null clean)
         && not ("{}" `isInfixOf` clean)
         && not ("backups" `isInfixOf` clean)
@@ -33,6 +33,6 @@ getTagName (TagName s) = s
 
 data Tag = Tag
   { tTagName :: TagName,
-    tRev :: Rev
+    tTagHash :: Rev
   }
   deriving (Eq, Ord, Show)
