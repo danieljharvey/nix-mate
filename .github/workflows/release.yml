@@ -2,7 +2,7 @@ name: New release
 on:
   push:
     tags:
-      - v[0-9]*
+      - "v*"
 
 jobs:
   build:
