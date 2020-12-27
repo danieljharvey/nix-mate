@@ -11,23 +11,47 @@ data Command
   | Init
   | Paths
   | Derivation
+  | ListTags
+  | Pin Rev
+  | SetVersion String
+  | UpdateVersion
   deriving (Eq, Ord, Show)
 
-getCmd :: IO Command
-getCmd = execParser (info opts idm)
+helpfulPreferences :: ParserPrefs
+helpfulPreferences =
+  defaultPrefs
+    { prefShowHelpOnError = True,
+      prefShowHelpOnEmpty = True
+    }
 
-searchDep :: Parser Dependency
-searchDep =
-  (Dependency)
+getCmd :: IO Command
+getCmd = customExecParser helpfulPreferences (info parseOpts idm)
+
+parseDependency :: Parser Dependency
+parseDependency =
+  Dependency
     <$> argument str (metavar "<package>")
 
-opts :: Parser Command
-opts =
-  subparser
+parseRevision :: Parser Rev
+parseRevision =
+  Rev
+    <$> argument
+      str
+      (metavar "<nixpkgs revision hash>")
+
+parseTagName :: Parser String
+parseTagName =
+  argument
+    str
+    (metavar "<nixpkgs version number>")
+
+parseOpts :: Parser Command
+parseOpts =
+  hsubparser
     ( command
         "search"
         ( info
-            (Search <$> searchDep)
+            (Search <$> parseDependency)
             (progDesc "Search for a package in Nix")
         )
         <> command
@@ -57,13 +81,37 @@ opts =
         <> command
           "add"
           ( info
-              (Add <$> searchDep)
+              (Add <$> parseDependency)
               (progDesc "Add a package")
           )
         <> command
           "remove"
           ( info
-              (Remove <$> searchDep)
+              (Remove <$> parseDependency)
               (progDesc "Remove a package")
+          )
+        <> command
+          "tags"
+          ( info
+              (pure ListTags)
+              (progDesc "List available nixpkgs versions")
+          )
+        <> command
+          "pin"
+          ( info
+              (Pin <$> parseRevision)
+              (progDesc "Pin project to a specific Nixpkgs revision")
+          )
+        <> command
+          "set-version"
+          ( info
+              (SetVersion <$> parseTagName)
+              (progDesc "Set project to use a tagged version of nixpkgs, ie '18.03'")
+          )
+        <> command
+          "update"
+          ( info
+              (pure UpdateVersion)
+              (progDesc "Set project to use the most recent stable version of nixpkgs")
           )
     )

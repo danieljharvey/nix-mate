@@ -20,7 +20,7 @@ createNixFile cfg = do
 
 savePackageNix :: Config -> IO ()
 savePackageNix cfg = do
-  writeFile ("./package.nix") (coerce createPackageNix cfg)
+  writeFile "./package.nix" (coerce createPackageNix cfg)
 
 createPackageNix :: Config -> Derivation
 createPackageNix config =
@@ -38,8 +38,7 @@ start = Derivation "let pkgs = import <nixpkgs> {}; "
 importPkgs :: Rev -> Sha256 -> Derivation
 importPkgs rev' sha256' =
   Derivation $
-    L.intercalate
-      " "
+    L.unwords
       [ "packages = import (pkgs.fetchFromGitHub {",
         "owner = \"nixos\";",
         "repo = \"nixpkgs\";",
@@ -60,6 +59,6 @@ packages name' deps =
       ]
   where
     depNames =
-      L.intercalate " " depNameList
+      L.unwords depNameList
     depNameList =
       coerce <$> S.toList deps

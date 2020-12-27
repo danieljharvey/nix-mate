@@ -11,7 +11,10 @@ import GHC.Generics
 
 -- which commit hash of nixpkgs are we pinned to?
 newtype Rev = Rev String
-  deriving newtype (Eq, Ord, Show, JSON.FromJSON, JSON.ToJSON)
+  deriving newtype (Eq, Ord, Show, JSON.FromJSON, JSON.ToJSON, Semigroup, Monoid)
+
+displayRev :: Rev -> String
+displayRev (Rev s) = s
 
 -- what is the hash of that commit?
 newtype Sha256 = Sha256 String
@@ -30,14 +33,13 @@ newtype ShellPath = ShellPath String
   deriving newtype (Eq, Ord, Show, JSON.FromJSON, JSON.ToJSON)
 
 -- our config file in the root of the project
-data Config
-  = Config
-      { rev :: Rev,
-        sha256 :: Sha256,
-        name :: ProjectName,
-        inputs :: Set Dependency,
-        nixShellPath :: ShellPath
-      }
+data Config = Config
+  { rev :: Rev,
+    sha256 :: Sha256,
+    name :: ProjectName,
+    inputs :: Set Dependency,
+    nixShellPath :: ShellPath
+  }
   deriving (Eq, Ord, Show, Generic, JSON.FromJSON, JSON.ToJSON)
 
 data ConfigError

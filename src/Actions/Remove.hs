@@ -25,7 +25,7 @@ hush _ = Nothing
 removePackage :: Path -> Dependency -> IO Config
 removePackage path depName = do
   cfg <- Actions.loadConfig path
-  case (hush cfg) >>= findInConfig depName of
+  case hush cfg >>= findInConfig depName of
     Just cfg' -> do
       let newCfg = removeFromConfig depName cfg'
       Actions.saveConfig path newCfg

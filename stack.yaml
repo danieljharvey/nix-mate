@@ -17,7 +17,7 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: lts-16.23
+resolver: lts-16.27
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -67,8 +67,7 @@ packages:
 
 ghc-options:
     # All packages
-    "$locals": -Wall
+    "$locals": -Wall -Wno-unticked-promoted-constructors -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
     "$targets": -Werror
     "$everything": -O2
-
 
