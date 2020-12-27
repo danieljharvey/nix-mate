@@ -116,3 +116,12 @@ nix-mate pin 1f795f9f44607cc5bec70d1300150bfefcef2aae
 This project is for users that would usually install project dependencies with `brew` or `apt-get` and would like a declarative way to do this per-project.
 
 If you're already familiar with Nix-the-language, then this project isn't for you. If you're happy creating your own `shell.nix` files etc and want more control, then there are great tools like [lorri](https://github.com/target/lorri) out there for just this.
+
+## Releasing a new version
+
+```bash
+git tag v0.0.1231233
+git push origin --tags
+```
+
+Then, fill in the release info on the created page.
