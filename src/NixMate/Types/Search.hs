@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module Types.Search where
+module NixMate.Types.Search where
 
 import qualified Data.Aeson as JSON
 import qualified Data.Map as M
@@ -15,18 +15,16 @@ data SearchError
 -- response from nix search
 type SearchResponse = M.Map String SearchPackage
 
-newtype PackageMeta
-  = PackageMeta
-      { description :: Maybe String
-      }
+newtype PackageMeta = PackageMeta
+  { description :: Maybe String
+  }
   deriving (Eq, Ord, Show, Generic, JSON.FromJSON)
 
-data SearchPackage
-  = SearchPackage
-      { name :: String,
-        pname :: String,
-        version :: String,
-        system :: String,
-        meta :: PackageMeta
-      }
+data SearchPackage = SearchPackage
+  { name :: String,
+    pname :: String,
+    version :: String,
+    system :: String,
+    meta :: PackageMeta
+  }
   deriving (Eq, Ord, Show, Generic, JSON.FromJSON)

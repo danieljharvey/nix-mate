@@ -1,0 +1,1 @@
+{"nixShellPath":"./shell.nix","inputs":["hello"],"name":"nix-mate","sha256":"1mjbv1j3w7wd2hh660scgqzmc9hscrfm96mqrpv1934iz82smkzy","rev":"2335e7354f8a9c34d4842aa107af14e268a27f07"}

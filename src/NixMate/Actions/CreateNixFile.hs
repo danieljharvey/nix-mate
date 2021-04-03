@@ -1,9 +1,14 @@
-module Actions.CreateNixFile (createNixFile, createDerivation, savePackageNix) where
+module NixMate.Actions.CreateNixFile
+  ( createNixFile,
+    createDerivation,
+    savePackageNix,
+  )
+where
 
 import Data.Coerce
 import qualified Data.List as L
 import Data.Set as S
-import Types.Config
+import NixMate.Types.Config
   ( Config (..),
     Dependency (..),
     ProjectName (..),
@@ -11,7 +16,7 @@ import Types.Config
     Sha256 (..),
     ShellPath (..),
   )
-import Types.CreateNixFile
+import NixMate.Types.CreateNixFile
 
 -- create shell.nix file from our config
 createNixFile :: Config -> IO ()

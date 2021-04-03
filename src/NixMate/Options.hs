@@ -1,7 +1,7 @@
-module Options (getCmd, Command (..)) where
+module NixMate.Options (getCmd, Command (..)) where
 
+import NixMate.Types.Config
 import Options.Applicative
-import Types.Config
 
 data Command
   = Search Dependency
@@ -15,6 +15,7 @@ data Command
   | Pin Rev
   | SetVersion String
   | UpdateVersion
+  | Docker
   deriving (Eq, Ord, Show)
 
 helpfulPreferences :: ParserPrefs
@@ -113,5 +114,11 @@ parseOpts =
           ( info
               (pure UpdateVersion)
               (progDesc "Set project to use the most recent stable version of nixpkgs")
+          )
+        <> command
+          "docker"
+          ( info
+              (pure Docker)
+              (progDesc "Create and load a Docker container containing project packages")
           )
     )

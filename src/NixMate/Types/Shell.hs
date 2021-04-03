@@ -1,4 +1,4 @@
-module Types.Shell (NixPaths (..)) where
+module NixMate.Types.Shell (NixPaths (..)) where
 
 newtype NixPaths = NixPaths String
   deriving (Show)

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4bd66e95ce9af34a02758a28ca73cde69d8a9e32fcb4d23d4e49e470f2709a1e
+-- hash: 3abc8d9c97b1344d289504131bbe21f2fcfe13866da4913b918bfb223554d119
 
 name:           nix-mate
 version:        0.1.0.0
@@ -27,24 +27,28 @@ source-repository head
 
 library
   exposed-modules:
-      Actions.Add
-      Actions.Config
-      Actions.CreateNixFile
-      Actions.Direnv
-      Actions.Pin
-      Actions.Remove
-      Actions.Search
-      Actions.Shell
-      Actions.Tags
-      Actions.Test
-      Types.Add
-      Types.Config
-      Types.CreateNixFile
-      Types.Direnv
-      Types.Pin
-      Types.Search
-      Types.Shell
-      Types.Tags
+      NixMate.Actions.Add
+      NixMate.Actions.Config
+      NixMate.Actions.CreateNixFile
+      NixMate.Actions.Direnv
+      NixMate.Actions.Docker
+      NixMate.Actions.Pin
+      NixMate.Actions.Remove
+      NixMate.Actions.Search
+      NixMate.Actions.Shell
+      NixMate.Actions.Tags
+      NixMate.Actions.Test
+      NixMate.Main
+      NixMate.Options
+      NixMate.Shared
+      NixMate.Types.Add
+      NixMate.Types.Config
+      NixMate.Types.CreateNixFile
+      NixMate.Types.Direnv
+      NixMate.Types.Pin
+      NixMate.Types.Search
+      NixMate.Types.Shell
+      NixMate.Types.Tags
   other-modules:
       Paths_nix_mate
   hs-source-dirs:
@@ -54,13 +58,13 @@ library
     , base >=4.7 && <5
     , bytestring
     , containers
+    , optparse-applicative
     , process
   default-language: Haskell2010
 
 executable nix-mate
   main-is: Main.hs
   other-modules:
-      Options
       Paths_nix_mate
   hs-source-dirs:
       app
@@ -88,6 +92,8 @@ test-suite nix-mate-test
     , base >=4.7 && <5
     , bytestring
     , containers
+    , hspec
     , nix-mate
+    , optparse-applicative
     , process
   default-language: Haskell2010

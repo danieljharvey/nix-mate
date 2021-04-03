@@ -1,25 +1,14 @@
-module Actions.Test where
+module NixMate.Actions.Test where
 
-import qualified Actions.CreateNixFile as Actions
-import Control.Exception (try)
 import Data.Coerce
-import System.Process
-import Types.Config
-import Types.CreateNixFile
+import qualified NixMate.Actions.CreateNixFile as Actions
+import NixMate.Shared (safeShell)
+import NixMate.Types.Config
+import NixMate.Types.CreateNixFile
 
 -- instead of looking up a package
 -- we just smash it into a derivation and see what Nix
 -- has to say about that
-
--- run a shell action that throws
--- todo, better capture errors
-safeShell :: String -> IO (Either String String)
-safeShell command = do
-  let myShell = (shell command) {cwd = Just "."}
-  either' <- try (readCreateProcess myShell "")
-  case (either' :: Either IOError String) of
-    Right a -> pure (Right a)
-    Left e -> pure (Left (show e))
 
 testCommand :: Derivation -> String
 testCommand derivation =

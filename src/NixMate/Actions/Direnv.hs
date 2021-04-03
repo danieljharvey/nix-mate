@@ -1,7 +1,7 @@
-module Actions.Direnv (createDirenvRc) where
+module NixMate.Actions.Direnv (createDirenvRc) where
 
 import Control.Exception (try)
-import Types.Direnv
+import NixMate.Types.Direnv
 
 -- here we create an .envrc which adds our new apps to the $PATH
 type Path = String

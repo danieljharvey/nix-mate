@@ -1,10 +1,10 @@
-module Actions.Add where
+module NixMate.Actions.Add where
 
-import qualified Actions.Config as Actions
-import qualified Actions.Test as Actions
 import qualified Data.Set as S
-import Types.Add
-import Types.Config
+import qualified NixMate.Actions.Config as Actions
+import qualified NixMate.Actions.Test as Actions
+import NixMate.Types.Add
+import NixMate.Types.Config
 
 type Path = String
 
