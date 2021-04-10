@@ -1,9 +1,17 @@
-module Actions.Tags (fetchTags, parseTags, displayTag, matchTag, findTagByHash, getRecent) where
+module NixMate.Actions.Tags
+  ( fetchTags,
+    parseTags,
+    displayTag,
+    matchTag,
+    findTagByHash,
+    getRecent,
+  )
+where
 
-import Actions.Search
 import Data.Maybe
-import Types.Config
-import Types.Tags
+import NixMate.Shared
+import NixMate.Types.Config
+import NixMate.Types.Tags
 
 findIn :: (a -> Bool) -> [a] -> Maybe a
 findIn f as = case filter f as of
@@ -27,7 +35,7 @@ displayTag (Tag tag _rev') =
 
 fetchTags :: IO [Tag]
 fetchTags = do
-  str <- safeShell gitCommand ""
+  str <- safeShellWithDefault gitCommand ""
   pure (parseTags str)
 
 parseTags :: String -> [Tag]

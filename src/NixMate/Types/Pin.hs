@@ -1,6 +1,6 @@
-module Types.Pin where
+module NixMate.Types.Pin where
 
-import Types.Config
+import NixMate.Types.Config
 
 data PinError
   = CouldNotUseNewRevision

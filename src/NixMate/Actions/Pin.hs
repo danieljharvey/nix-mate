@@ -1,9 +1,9 @@
-module Actions.Pin (updateRev) where
+module NixMate.Actions.Pin (updateRev) where
 
-import qualified Actions.Config as Actions
-import Actions.Search
-import Types.Config
-import Types.Pin
+import qualified NixMate.Actions.Config as Actions
+import NixMate.Shared
+import NixMate.Types.Config
+import NixMate.Types.Pin
 
 type Path = String
 
@@ -25,7 +25,7 @@ updateRev cfg path revision = do
 -- runs nix-shell, gets paths, cleans them, returns them
 getSha256ForRev :: Rev -> IO (Either PinError Sha256)
 getSha256ForRev revision = do
-  fetched <- safeShell command ""
+  fetched <- safeShellWithDefault command ""
   case lastLine fetched of
     Just sha -> pure $ Right (Sha256 sha)
     _ -> pure $ Left $ CouldNotCalculateSha revision

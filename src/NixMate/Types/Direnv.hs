@@ -1,4 +1,4 @@
-module Types.Direnv where
+module NixMate.Types.Direnv where
 
 data DirenvError
   = CouldNotWriteEnvrc

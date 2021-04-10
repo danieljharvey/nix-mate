@@ -1,6 +1,6 @@
-module Types.Add where
+module NixMate.Types.Add where
 
-import Types.Config
+import NixMate.Types.Config
 
 data AddError
   = CouldNotFindPackage Dependency

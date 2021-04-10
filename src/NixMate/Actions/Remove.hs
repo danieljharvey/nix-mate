@@ -1,9 +1,9 @@
-module Actions.Remove (removePackage) where
+module NixMate.Actions.Remove (removePackage) where
 
-import qualified Actions.Config as Actions
 import Data.Coerce
 import qualified Data.Set as S
-import Types.Config
+import qualified NixMate.Actions.Config as Actions
+import NixMate.Types.Config
 
 type Path = String
 

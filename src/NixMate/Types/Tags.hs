@@ -1,11 +1,18 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
 
-module Types.Tags (Tag (..), TagName, mkTagName, getTagName, tagsPrefix) where
+module NixMate.Types.Tags
+  ( Tag (..),
+    TagName,
+    mkTagName,
+    getTagName,
+    tagsPrefix,
+  )
+where
 
 import qualified Data.Char as Char
 import Data.List (isInfixOf)
-import Types.Config
+import NixMate.Types.Config
 
 newtype TagName = TagName String
   deriving newtype (Eq, Ord, Show)

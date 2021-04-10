@@ -25,6 +25,7 @@ dependencies:
 - process
 - bytestring
 - containers
+- optparse-applicative
 
 library:
   source-dirs: src
@@ -39,8 +40,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - nix-mate
-    - optparse-applicative
-
+    
 tests:
   nix-mate-test:
     main:                Spec.hs
@@ -51,3 +51,4 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - nix-mate
+    - hspec

@@ -1,9 +1,9 @@
-module Actions.Config where
+module NixMate.Actions.Config where
 
 import qualified Data.Aeson as JSON
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Set as S
-import Types.Config
+import NixMate.Types.Config
 
 type Path = String
 
