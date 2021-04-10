@@ -111,6 +111,29 @@ nix-mate pin <commit-hash>
 nix-mate pin 1f795f9f44607cc5bec70d1300150bfefcef2aae
 ```
 
+#### Create a Docker image
+
+We can create and load a Docker image containing your project dependencies by
+running `nix-mate docker`. This will create an image called
+`<project-name>:latest`. This command creates Linux-based images, so if you are 
+using MacOS, you will need to install  `https://github.com/nix-community/linuxkit-nix`
+
+Install as follows:
+
+```bash
+# install linux-kit
+nix-env -i /nix/store/jgq3savsyyrpsxvjlrz41nx09z7r0lch-linuxkit-builder
+
+# remove old config
+rm -rf ~/.cache/nix-linuxkit-builder
+
+# setup linux-kit
+nix-linuxkit-configure
+
+# add linuxkit ssh config to local ssh config
+sudo cat /var/root/.ssh/nix-linuxkit-ssh-config >> ~/.ssh/config
+```
+
 ## Who is this for?
 
 This project is for users that would usually install project dependencies with `brew` or `apt-get` and would like a declarative way to do this per-project.
